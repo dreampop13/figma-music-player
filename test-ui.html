@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Figma Player Test</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    #log {
+      background: #f5f5f5;
+      padding: 10px;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      height: 300px;
+      overflow: auto;
+    }
+    .error { color: red; }
+    .success { color: green; }
+    .info { color: blue; }
+  </style>
+</head>
+<body>
+  <h1>SoundCloud Player Test</h1>
+  
+  <div>
+    <button id="loadScript">Load UI Script</button>
+    <button id="checkEnvironment">Check Environment</button>
+    <button id="clearLog">Clear Log</button>
+  </div>
+  
+  <div id="log"></div>
+  
+  <script>
+    // 로그 함수
+    function log(message, type = 'info') {
+      console.log(message);
+      const logElement = document.getElementById('log');
+      const entry = document.createElement('div');
+      entry.className = type;
+      entry.textContent = new Date().toLocaleTimeString() + ': ' + message;
+      logElement.appendChild(entry);
+      // 자동 스크롤
+      logElement.scrollTop = logElement.scrollHeight;
+    }
+    
+    // 전역 오류 처리
+    window.addEventListener('error', function(event) {
+      log('Error: ' + event.message, 'error');
+      return false;
+    });
+    
+    // 환경 확인
+    document.getElementById('checkEnvironment').addEventListener('click', function() {
+      log('Checking environment...', 'info');
+      log('window.SC: ' + (window.SC ? 'Exists' : 'Not loaded'), window.SC ? 'success' : 'error');
+      
+      // ThemeManager와 TrackService가 있는지 간접적으로 확인
+      try {
+        if (window.PlayerUI) {
+          log('PlayerUI loaded: Yes', 'success');
+        } else {
+          log('PlayerUI not available', 'error');
+        }
+      } catch (e) {
+        log('Error checking PlayerUI: ' + e.message, 'error');
+      }
+    });
+    
+    // 스크립트 로드 버튼
+    document.getElementById('loadScript').addEventListener('click', function() {
+      log('Loading UI script...', 'info');
+      
+      const script = document.createElement('script');
+      script.src = 'dist/ui.js';
+      
+      script.onload = function() {
+        log('Script loaded successfully', 'success');
+      };
+      
+      script.onerror = function() {
+        log('Failed to load script', 'error');
+      };
+      
+      document.head.appendChild(script);
+    });
+    
+    // 로그 지우기
+    document.getElementById('clearLog').addEventListener('click', function() {
+      document.getElementById('log').innerHTML = '';
+      log('Log cleared', 'info');
+    });
+    
+    // 초기화
+    log('Test environment ready', 'info');
+  </script>
+</body>
+</html> 

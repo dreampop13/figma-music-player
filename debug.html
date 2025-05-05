@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>SoundCloud Player Debug</title>
+  <style>
+    :root {
+      --theme-background: #FFCC00;
+      --theme-text: #000000;
+      --theme-button: #000000;
+      --theme-display: #111111;
+      --theme-display-text: #FFFFFF;
+      --theme-accent: #FF0000;
+      --theme-radius: 4px;
+    }
+
+    body {
+      font-family: Inter, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: var(--theme-background);
+      color: var(--theme-text);
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: var(--theme-button);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      margin: 5px;
+      border-radius: var(--theme-radius);
+      cursor: pointer;
+    }
+
+    #log {
+      background-color: rgba(0,0,0,0.1);
+      border: 1px solid var(--theme-text);
+      border-radius: var(--theme-radius);
+      padding: 10px;
+      height: 300px;
+      overflow: auto;
+      margin-top: 20px;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>SoundCloud Player Debug</h1>
+    <div>
+      <button id="inspectThemes">테마 로드 테스트</button>
+      <button id="inspectTracks">트랙 로드 테스트</button>
+      <button id="initTest">UI 초기화 테스트</button>
+      <button id="clearLog">로그 지우기</button>
+    </div>
+    <div id="log"></div>
+  </div>
+
+  <script>
+    // 로그 함수
+    function log(message, type = 'info') {
+      const logElement = document.getElementById('log');
+      const entry = document.createElement('div');
+      entry.className = type;
+      
+      const time = new Date().toLocaleTimeString();
+      entry.textContent = `[${time}] [${type.toUpperCase()}] ${message}`;
+      
+      if (type === 'error') {
+        entry.style.color = 'red';
+      } else if (type === 'success') {
+        entry.style.color = 'green';
+      }
+      
+      logElement.appendChild(entry);
+      logElement.scrollTop = logElement.scrollHeight;
+      console.log(`[${type.toUpperCase()}] ${message}`);
+    }
+
+    // 전역 오류 핸들러
+    window.addEventListener('error', (event) => {
+      log(`Error: ${event.message} at ${event.filename}:${event.lineno}`, 'error');
+      return false;
+    });
+
+    // 버튼 이벤트 핸들러
+    document.getElementById('clearLog').addEventListener('click', () => {
+      document.getElementById('log').innerHTML = '';
+      log('로그 지워짐');
+    });
+
+    // 디버그 이벤트 모니터링 함수
+    function monitorEvents() {
+      try {
+        // DOM이 완전히 로드된 후에만 실행
+        if (document.readyState !== 'complete') {
+          log('DOM이 완전히 로드되기를 기다립니다...');
+          window.addEventListener('load', monitorEvents);
+          return;
+        }
+        
+        log('이벤트 모니터링 시작...', 'success');
+
+        // 테마 선택 이벤트
+        const mockThemeSelect = document.createElement('select');
+        mockThemeSelect.id = 'theme-select';
+        document.body.appendChild(mockThemeSelect);
+        
+        // 트랙 목록 영역
+        const mockTrackList = document.createElement('div');
+        mockTrackList.id = 'track-list';
+        document.body.appendChild(mockTrackList);
+      
+        // 객체 및 이벤트 후킹
+        setInterval(() => {
+          if (window.ThemeManager) {
+            const themeManager = window.ThemeManager.getInstance();
+            const themes = themeManager.getAllThemes();
+            
+            if (themes && themes.length > 0 && mockThemeSelect.children.length === 0) {
+              log(`${themes.length}개 테마 발견, 목록 생성 중...`);
+              
+              // 테마 옵션 추가
+              themes.forEach(theme => {
+                const option = document.createElement('option');
+                option.value = theme.id;
+                option.text = theme.name;
+                mockThemeSelect.appendChild(option);
+              });
+              
+              // 테마 선택 이벤트 모니터링
+              mockThemeSelect.addEventListener('change', (e) => {
+                log(`테마 선택 이벤트: ${e.target.value}`, 'success');
+              });
+            }
+          }
+          
+          if (window.TrackService) {
+            const trackService = window.TrackService.getInstance();
+            const tracks = trackService?.getPredefinedTracks();
+            
+            if (tracks && tracks.length > 0 && mockTrackList.children.length === 0) {
+              log(`${tracks.length}개 트랙 발견, 목록 생성 중...`);
+              
+              // 트랙 항목 추가
+              tracks.forEach((track, index) => {
+                const trackItem = document.createElement('div');
+                trackItem.className = 'track-item';
+                trackItem.innerHTML = `${track.title} - ${track.artist}`;
+                trackItem.addEventListener('click', () => {
+                  log(`트랙 선택 이벤트: ${track.title}`, 'success');
+                });
+                mockTrackList.appendChild(trackItem);
+              });
+            }
+          }
+        }, 1000);
+      } catch (error) {
+        log(`이벤트 모니터링 오류: ${error.message}`, 'error');
+      }
+    }
+
+    // 테마 로드 테스트
+    document.getElementById('inspectThemes').addEventListener('click', async () => {
+      log('테마 로드 테스트 시작...');
+      
+      try {
+        // 테마 모듈 로드
+        const themesModule = await import('./dist/ui.js');
+        log('UI 모듈 로드됨', 'success');
+        
+        // 글로벌 객체에 타입 정의
+        if (window.ThemeManager) {
+          log('ThemeManager 존재함', 'success');
+          const instance = window.ThemeManager.getInstance();
+          log(`ThemeManager 인스턴스 획득: ${instance ? 'Success' : 'Failed'}`);
+          
+          if (instance) {
+            const themes = instance.getAllThemes();
+            log(`테마 ${themes.length}개 로드됨:`, 'success');
+            themes.forEach(theme => {
+              log(`- ${theme.name} (${theme.id})`);
+            });
+          }
+        } else {
+          log('ThemeManager 찾을 수 없음', 'error');
+        }
+      } catch (error) {
+        log(`테마 로드 중 오류: ${error.message}`, 'error');
+      }
+    });
+
+    // 트랙 로드 테스트
+    document.getElementById('inspectTracks').addEventListener('click', async () => {
+      log('트랙 로드 테스트 시작...');
+      
+      try {
+        if (window.TrackService) {
+          log('TrackService 존재함', 'success');
+          const instance = window.TrackService.getInstance();
+          log(`TrackService 인스턴스 획득: ${instance ? 'Success' : 'Failed'}`);
+          
+          if (instance) {
+            const tracks = instance.getPredefinedTracks();
+            log(`트랙 ${tracks.length}개 로드됨:`, 'success');
+            tracks.forEach(track => {
+              log(`- ${track.title} (${track.artist})`);
+            });
+          }
+        } else {
+          log('TrackService 찾을 수 없음', 'error');
+        }
+      } catch (error) {
+        log(`트랙 로드 중 오류: ${error.message}`, 'error');
+      }
+    });
+
+    // UI 초기화 테스트
+    document.getElementById('initTest').addEventListener('click', async () => {
+      log('UI 초기화 테스트 시작...');
+      
+      try {
+        if (window.PlayerUI) {
+          log('PlayerUI 클래스 존재함', 'success');
+        } else {
+          log('PlayerUI 클래스 찾을 수 없음', 'error');
+        }
+      } catch (error) {
+        log(`UI 초기화 테스트 중 오류: ${error.message}`, 'error');
+      }
+    });
+
+    // 페이지 로드 시
+    window.addEventListener('DOMContentLoaded', () => {
+      log('디버그 페이지 로드됨', 'success');
+      log('테스트 버튼을 클릭하여 각 컴포넌트를 테스트하세요');
+      
+      // 이벤트 모니터링 시작
+      monitorEvents();
+    });
+
+    // UI 스크립트 로드
+    log('UI 스크립트 로드 중...');
+    const script = document.createElement('script');
+    script.src = './dist/ui.js';
+    script.onload = () => log('UI 스크립트 로드 완료', 'success');
+    script.onerror = (error) => log(`UI 스크립트 로드 실패: ${error}`, 'error');
+    document.head.appendChild(script);
+  </script>
+</body>
+</html> 

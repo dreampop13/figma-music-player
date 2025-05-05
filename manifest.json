@@ -1,0 +1,16 @@
+{
+  "name": "SoundCloud Player - Theme Player",
+  "id": "soundcloud-theme-player",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "./ui.html",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": [
+      "https://api.soundcloud.com", 
+      "https://connect.soundcloud.com", 
+      "https://sdk.soundcloud.com", 
+      "https://w.soundcloud.com"
+    ]
+  }
+}

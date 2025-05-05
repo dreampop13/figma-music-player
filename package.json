@@ -1,0 +1,18 @@
+{
+  "name": "figma-soundcloud-player",
+  "version": "1.0.0",
+  "description": "SoundCloud Player for Figma with TypeScript",
+  "main": "dist/code.js",
+  "scripts": {
+    "build": "webpack --mode=production",
+    "dev": "webpack --mode=development --watch"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.110.0",
+    "@types/node": "^16.11.7",
+    "ts-loader": "^9.5.2",
+    "typescript": "^4.9.5",
+    "webpack": "^5.99.7",
+    "webpack-cli": "^4.10.0"
+  }
+}
