@@ -6,6 +6,7 @@
       @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
       @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
       
       :root {
         --theme-background: #FFFFFF; /* Modern Default 배경색 */
@@ -21,6 +22,8 @@
         --font-pixel: 'Press Start 2P', cursive;
         --font-helvetica: Helvetica, Arial, sans-serif;
         --font-avenir: Avenir, 'Avenir Next', -apple-system, sans-serif;
+        --font-elegant: 'Georgia', serif;
+        --font-vibrant: 'Abril Fatface', 'Playfair Display', serif;
         --space-xxs: 3px;
         --space-xs: 4px;
         --space-sm: 6px;
@@ -550,7 +553,112 @@
         opacity: 0.7;
         margin-top: var(--space-md);
       }
-    </style>
+
+      /* HeroUI Elegant theme styles */
+      .elegant-theme .preview-display {
+        font-family: var(--font-elegant);
+        font-size: 11px;
+      }
+      
+      .elegant-theme .track-title, 
+      .elegant-theme .preview-title,
+      .elegant-theme .now-playing span,
+      .elegant-theme .preview-artist {
+        font-family: var(--font-elegant);
+      }
+      
+      .elegant-theme .play-button {
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+      
+      .elegant-theme .progress-container {
+        height: 4px;
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+      
+      .elegant-theme .now-playing-container {
+        background-color: rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      }
+
+      /* Retro theme styles */
+      .retro-theme {
+        background: #FFF0E5;
+      }
+      
+      .retro-theme .preview-display {
+        font-family: var(--font-primary);
+        font-size: 11px;
+        background-color: #FF5F6D;
+        color: white;
+        border: none;
+      }
+      
+      .retro-theme .track-title, 
+      .retro-theme .preview-title,
+      .retro-theme .now-playing span {
+        font-family: var(--font-primary);
+        letter-spacing: 0;
+      }
+      
+      .retro-theme .preview-artist,
+      .retro-theme .track-artist {
+        font-family: var(--font-primary);
+        letter-spacing: 0;
+      }
+      
+      .retro-theme .time-display {
+        font-family: var(--font-primary);
+      }
+      
+      .retro-theme .track-list {
+        background: rgba(255, 154, 139, 0.1);
+        border: 1px solid rgba(255, 106, 136, 0.3);
+      }
+      
+      .retro-theme .track-item {
+        background-color: #FFD0A8 !important;
+        border-bottom: 1px solid rgba(255, 106, 136, 0.3) !important;
+        transition: all 0.3s ease;
+        color: #472D2D !important;
+      }
+      
+      .retro-theme .track-item:hover {
+        background-color: #FFAB76 !important;
+        color: #472D2D !important;
+      }
+      
+      .retro-theme .track-item.selected {
+        background-color: #FF5F6D !important;
+        color: white !important;
+      }
+      
+      .retro-theme .play-button {
+        background-color: #FF6B6B;
+      }
+      
+      .retro-theme .progress-container {
+        background: rgba(255, 255, 255, 0.3);
+      }
+      
+      .retro-theme .progress-bar {
+        background-color: #FC466B;
+      }
+      
+      .retro-theme .now-playing-container {
+        background-color: #FF9A8B;
+        border: none;
+      }
+      
+      .retro-theme .status-dot {
+        background-color: #FC466B;
+      }
+      
+      .retro-theme .status-dot.playing {
+        animation: pulse 1.5s infinite;
+      }
+  </style>
     <script>
       // 초기 테마를 설정하기 위한 즉시 실행 함수
       (function() {
@@ -600,7 +708,7 @@
           const themes = [
             {
               id: "framer-minimal",
-              name: "Modern (Default)",
+              name: "Modern",
               styles: {
                 backgroundColor: "#FFFFFF",
                 textColor: "#000000",
@@ -613,7 +721,7 @@
             },
             {
               id: "framer-dark",
-              name: "Modern (Dark)",
+              name: "Modern Dark",
               styles: {
                 backgroundColor: "#1E1E1E", 
                 textColor: "#FFFFFF",
@@ -626,7 +734,7 @@
             },
             {
               id: "te-op1",
-              name: "TE OP-1",
+              name: "Teenage Engineering OP-1",
               styles: {
                 backgroundColor: "#FFCC00",
                 textColor: "#000000",
@@ -634,19 +742,6 @@
                 displayColor: "#111111",
                 displayTextColor: "#FFFFFF",
                 accentColor: "#FF0000",
-                borderRadius: "4px"
-              }
-            },
-            {
-              id: "te-op1-dark",
-              name: "TE OP-1 Dark",
-              styles: {
-                backgroundColor: "#222222",
-                textColor: "#FFFFFF",
-                buttonColor: "#FFCC00",
-                displayColor: "#000000",
-                displayTextColor: "#FFCC00",
-                accentColor: "#FFCC00",
                 borderRadius: "4px"
               }
             },
@@ -688,6 +783,32 @@
                 accentColor: "#666666", // Changed from Apple blue to dark gray
                 borderRadius: "8px"
               }
+            },
+            {
+              id: "elegant-theme",
+              name: "Elegant",
+              styles: {
+                backgroundColor: "#F8F5F2",
+                textColor: "#2C2C2C",
+                buttonColor: "#9E7F66",
+                displayColor: "#FFFFFF",
+                displayTextColor: "#2C2C2C",
+                accentColor: "#9E7F66",
+                borderRadius: "8px"
+              }
+            },
+            {
+              id: "retro-theme",
+              name: "Retro",
+              styles: {
+                backgroundColor: "#FFF0E5",
+                textColor: "#472D2D",
+                buttonColor: "#FF6B6B",
+                displayColor: "#FF5F6D",
+                displayTextColor: "#FFFFFF",
+                accentColor: "#FC466B",
+                borderRadius: "10px"
+              }
             }
           ];
           
@@ -726,14 +847,23 @@
           document.body.classList.add('theme-transition');
           
           // 이전 테마 클래스 제거
-          document.body.classList.remove('ipod-classic', 'vapor-wave', 'minimal-player');
+          document.body.classList.remove('ipod-classic', 'vapor-wave', 'minimal-player', 'elegant-theme', 'retro-theme');
           
           // 특정 테마 클래스 추가
           if (theme.id === 'ipod-classic') {
             document.body.classList.add('ipod-classic');
           } else if (theme.id === 'vapor-wave') {
             document.body.classList.add('vapor-wave');
+          } else if (theme.id === 'elegant-theme') {
+            document.body.classList.add('elegant-theme');
+          } else if (theme.id === 'retro-theme') {
+            document.body.classList.add('retro-theme');
+            console.log('Retro theme 클래스가 추가되었습니다!');
+            this.showToast('Retro theme applied');
           }
+          
+          // 디버깅: 테마 클래스 출력
+          console.log('현재 body 클래스:', document.body.classList.toString());
           
           // CSS 변수 설정 - border-radius는 업데이트하지 않음
           const root = document.documentElement;
@@ -769,7 +899,7 @@
               }
               
               // 알림 표시
-              this.showToast(`🎨 ${theme.name}`);
+              this.showToast(`${theme.name}`);
               
               // 우리가 SoundCloud API로 액세스할 필요 없이
               // 2. 기존 iframe 유지 (교체하지 않음)
@@ -792,6 +922,9 @@
         // 토스트 메시지 표시
         showToast: function(message, duration = 1500) {
           try {
+            // 이모지 제거
+            message = message.replace(/[^\x00-\x7F]/g, '').trim();
+            
             // 기존 토스트 제거
             const existingToast = document.getElementById('plugin-toast');
             if (existingToast) {
@@ -885,7 +1018,7 @@
                   trackItem.innerHTML = clone.innerHTML;
                   
                   // 토스트 메시지 표시 - 간결하게 변경
-                  window.debugFigmaPlugin.showToast(`▶ ${track.title}`);
+                  window.debugFigmaPlugin.showToast(`${track.title}`);
                 }, 1000);
               }
             }
@@ -954,7 +1087,7 @@
           return [
             {
               id: "framer-minimal",
-              name: "Modern (Default)",
+              name: "Modern",
               styles: {
                 backgroundColor: "#FFFFFF",
                 textColor: "#000000",
@@ -967,7 +1100,7 @@
             },
             {
               id: "framer-dark",
-              name: "Modern (Dark)",
+              name: "Modern Dark",
               styles: {
                 backgroundColor: "#1E1E1E", 
                 textColor: "#FFFFFF",
@@ -980,7 +1113,7 @@
             },
             {
               id: "te-op1",
-              name: "TE OP-1",
+              name: "Teenage Engineering OP-1",
               styles: {
                 backgroundColor: "#FFCC00",
                 textColor: "#000000",
@@ -988,19 +1121,6 @@
                 displayColor: "#111111",
                 displayTextColor: "#FFFFFF",
                 accentColor: "#FF0000",
-                borderRadius: "4px"
-              }
-            },
-            {
-              id: "te-op1-dark",
-              name: "TE OP-1 Dark",
-              styles: {
-                backgroundColor: "#222222",
-                textColor: "#FFFFFF",
-                buttonColor: "#FFCC00",
-                displayColor: "#000000",
-                displayTextColor: "#FFCC00",
-                accentColor: "#FFCC00",
                 borderRadius: "4px"
               }
             },
@@ -1041,6 +1161,32 @@
                 displayTextColor: "#000000",
                 accentColor: "#666666", // Changed from Apple blue to dark gray
                 borderRadius: "8px"
+              }
+            },
+            {
+              id: "elegant-theme",
+              name: "Elegant",
+              styles: {
+                backgroundColor: "#F8F5F2",
+                textColor: "#2C2C2C",
+                buttonColor: "#9E7F66",
+                displayColor: "#FFFFFF",
+                displayTextColor: "#2C2C2C",
+                accentColor: "#9E7F66",
+                borderRadius: "8px"
+              }
+            },
+            {
+              id: "retro-theme",
+              name: "Retro",
+              styles: {
+                backgroundColor: "#FFF0E5",
+                textColor: "#472D2D",
+                buttonColor: "#FF6B6B",
+                displayColor: "#FF5F6D",
+                displayTextColor: "#FFFFFF",
+                accentColor: "#FC466B",
+                borderRadius: "10px"
               }
             }
           ];
