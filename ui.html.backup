@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Figma Music Player - Chill Mix for Designers</title>
+    <title>Figma Music Player - Chill mix for the designers</title>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
       @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -19,15 +19,13 @@
         --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         --font-mono: 'JetBrains Mono', monospace;
         --font-pixel: 'Press Start 2P', cursive;
-        --font-helvetica: Helvetica, Arial, sans-serif;
-        --font-avenir: Avenir, 'Avenir Next', -apple-system, sans-serif;
         --space-xxs: 3px;
         --space-xs: 4px;
         --space-sm: 6px;
         --space-md: 10px;
         --space-lg: 16px;
         --space-xl: 22px;
-        --player-height: 80px; /* 더 감소된 플레이어 높이 */
+        --player-height: 90px; /* 감소된 플레이어 높이 */
         --mini-scale: 0.7; /* 더 작은 전체적인 크기 축소 비율 */
         --font-xs: 8px;
         --font-sm: 10px;
@@ -74,15 +72,15 @@
       }
 
       .theme-selector {
-        margin-bottom: var(--space-xs); /* 공간 줄임 */
+        margin-bottom: var(--space-sm);
       }
 
       .theme-selector select {
         width: 100%;
-        padding: var(--space-xs) var(--space-md); /* 약간 더 큰 가로 패딩 */
+        padding: var(--space-xs) var(--space-sm);
         background-color: transparent;
         color: var(--theme-text);
-        font-size: 11px; /* 약간 작은 폰트 크기로 변경 */
+        font-size: 12px;
         transition: all var(--transition-speed) ease;
         border: 1px solid rgba(0, 0, 0, 0.2);
         border-radius: var(--theme-radius-fixed);
@@ -92,12 +90,11 @@
         background-position: right 8px top 50%;
         background-size: 8px auto;
         padding-right: 20px;
-        height: 30px; /* 고정 높이 */
       }
       
       .theme-selector select:focus {
         outline: none;
-        box-shadow: none; /* 테두리 변경 제거 */
+        box-shadow: 0 0 0 1px var(--theme-accent);
       }
 
       .playlist-title {
@@ -106,7 +103,6 @@
         color: var(--theme-text);
         opacity: 0.8;
         margin-bottom: var(--space-xs);
-        margin-top: var(--space-sm); /* Added top margin for better spacing */
         display: block;
       }
 
@@ -219,46 +215,8 @@
       
       /* Vapor Wave specific styles */
       .vapor-wave .preview-display {
-        font-family: var(--font-avenir);
+        font-family: var(--font-pixel);
         font-size: 8px;
-      }
-      
-      .vapor-wave .track-title, 
-      .vapor-wave .preview-title,
-      .vapor-wave .now-playing span,
-      .vapor-wave .preview-artist {
-        font-family: var(--font-avenir);
-      }
-      
-      /* SKYLRK specific styles */
-      .neo-mint .preview-display {
-        font-family: var(--font-helvetica);
-        font-size: 11px;
-      }
-      
-      .neo-mint .track-title, 
-      .neo-mint .preview-title,
-      .neo-mint .now-playing span,
-      .neo-mint .preview-artist {
-        font-family: var(--font-helvetica);
-      }
-      
-      /* Modern styles */
-      .framer-minimal .preview-display,
-      .framer-dark .preview-display {
-        font-family: var(--font-primary);
-        font-size: 11px;
-      }
-      
-      .framer-minimal .track-title, 
-      .framer-minimal .preview-title,
-      .framer-minimal .now-playing span,
-      .framer-minimal .preview-artist,
-      .framer-dark .track-title, 
-      .framer-dark .preview-title,
-      .framer-dark .now-playing span,
-      .framer-dark .preview-artist {
-        font-family: var(--font-primary);
       }
       
       /* 미니멀 플레이어 스타일 (앨범아트 없음) */
@@ -299,9 +257,8 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: var(--space-xs);
+        margin-bottom: var(--space-sm);
         width: 100%;
-        margin-top: 7px; /* Adjusted to move Now Playing text down slightly */
       }
       
       .now-playing span {
@@ -312,26 +269,8 @@
       }
       
       .now-playing .status-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background-color: var(--theme-accent);
-        transition: all 0.3s ease;
-        opacity: 0.7;
-        display: inline-block;
-        margin-right: var(--space-md); /* Match card padding */
-      }
-      
-      .now-playing .status-dot.playing {
-        opacity: 1;
-        box-shadow: 0 0 4px var(--theme-accent);
-        animation: pulse 1.5s infinite;
-      }
-      
-      @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-        100% { transform: scale(1); }
+        position: absolute;
+        right: 0;
       }
 
       /* Fix NOW PLAYING text alignment */
@@ -442,114 +381,6 @@
         display: block !important;
         opacity: 0.5;
       }
-
-      /* Now Playing 카드 스타일 */
-      .now-playing-container {
-        background-color: rgba(0, 0, 0, 0.1);
-        border-radius: var(--theme-radius-fixed) !important;
-        padding: var(--space-lg) var(--space-lg);
-        margin: var(--space-sm) 0 5px 0;
-        position: relative;
-        overflow: hidden;
-        z-index: 0;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        height: 41px; /* 10% 더 감소된 수직 크기 */
-      }
-      
-      /* 플레이어 컨트롤 스타일 */
-      .player-controls {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        margin-top: 0;
-        padding-left: 0;
-        gap: var(--space-xs);
-        height: 100%; /* 세로 중앙 정렬을 위한 높이 설정 */
-      }
-      
-      .play-button {
-        width: 32px; /* 버튼 크기 감소 */
-        height: 32px; /* 버튼 크기 감소 */
-        border-radius: 50%;
-        background-color: var(--theme-button);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        cursor: pointer;
-        color: #fff;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-        transition: all 0.2s ease;
-        margin-left: -10px; /* 좌측으로 더 이동 */
-      }
-      
-      .play-button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-      }
-      
-      .play-button svg {
-        width: 16px; /* 아이콘 크기 감소 */
-        height: 16px; /* 아이콘 크기 감소 */
-        fill: currentColor;
-      }
-      
-      .progress-container {
-        flex: 1;
-        height: 6px;
-        background-color: rgba(255, 255, 255, 0.2);
-        border-radius: 4px;
-        overflow: hidden;
-        position: relative;
-        cursor: pointer;
-      }
-      
-      .progress-bar {
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        background-color: var(--theme-accent);
-        width: 30%;
-      }
-      
-      .time-display {
-        font-size: 10px;
-        opacity: 0.7;
-      }
-
-      /* 앨범 아트 스타일 제거 */
-      .album-art-mini, .player-content {
-        display: none;
-      }
-      
-      /* 타이틀 스타일 */
-      .preview-title {
-        font-size: 13px;
-        font-weight: bold;
-        margin-top: 16px;
-        margin-bottom: 1px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      
-      .preview-artist {
-        font-size: 11px;
-        opacity: 0.8;
-        margin-bottom: var(--space-xxs);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      /* Footer 스타일 */
-      .footer {
-        font-size: 8px; /* 텍스트 크기 감소 */
-        text-align: center;
-        opacity: 0.7;
-        margin-top: var(--space-md);
-      }
     </style>
     <script>
       // 초기 테마를 설정하기 위한 즉시 실행 함수
@@ -652,7 +483,7 @@
             },
             {
               id: "neo-mint",
-              name: "SKYLRK",
+              name: "Neo Mint",
               styles: {
                 backgroundColor: "#BDEED0",
                 textColor: "#2A3B47",
@@ -746,12 +577,6 @@
           root.style.setProperty('--theme-display-text', styles.displayTextColor);
           root.style.setProperty('--theme-accent', styles.accentColor);
           // border-radius는 고정값 사용
-          
-          // 테마 셀렉터의 테두리 색상은 항상 동일하게 유지
-          const themeSelect = document.getElementById('theme-select');
-          if (themeSelect) {
-            themeSelect.style.borderColor = 'rgba(0, 0, 0, 0.2)';
-          }
           
           // IFRAME 업데이트 - 새로운 접근 방식
           // 기존 iframe을 유지하고 SoundCloud 색상 매개변수만 변경합니다
@@ -1006,7 +831,7 @@
             },
             {
               id: "neo-mint",
-              name: "SKYLRK",
+              name: "Neo Mint",
               styles: {
                 backgroundColor: "#BDEED0",
                 textColor: "#2A3B47",
@@ -1310,7 +1135,7 @@
         <div class="preview-player">
           <div class="preview-display">
             <div class="now-playing">
-              <span>NOW PLAYING</span>
+              <span style="text-align: left;">NOW PLAYING</span>
               <div class="status-dot" id="status-dot"></div>
             </div>
             <div class="preview-title" id="preview-title">Select a track</div>
@@ -1345,7 +1170,7 @@
       </div>
       
       <div class="footer">
-        &copy; Sobak Figma Music Player
+        &copy; 2025 UX Lab | Corporate Designer Center | LG Electronics
       </div>
     </div>
     
