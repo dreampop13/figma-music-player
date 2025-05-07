@@ -552,6 +552,14 @@
         text-align: center;
         opacity: 0.7;
         margin-top: var(--space-md);
+        position: relative;
+      }
+      
+      .footer .update-info {
+        margin-bottom: var(--space-sm);
+        font-size: 9px;
+        margin-top: -25px;
+        padding-top: 0;
       }
 
       /* HeroUI Elegant theme styles */
@@ -584,15 +592,16 @@
 
       /* Retro theme styles */
       .retro-theme {
-        background: #FFF0E5;
+        background: linear-gradient(135deg, #FFF0E5, #FF9A8B);
       }
       
       .retro-theme .preview-display {
         font-family: var(--font-primary);
         font-size: 11px;
-        background-color: #FF5F6D;
-        color: white;
+        background: linear-gradient(135deg, #FFAB76, #FFD0A8);
+        color: #472D2D;
         border: none;
+        box-shadow: 0 2px 8px rgba(255, 95, 109, 0.2);
       }
       
       .retro-theme .track-title, 
@@ -613,29 +622,41 @@
       }
       
       .retro-theme .track-list {
-        background: rgba(255, 154, 139, 0.1);
-        border: 1px solid rgba(255, 106, 136, 0.3);
+        background: linear-gradient(135deg, rgba(255, 154, 139, 0.1), rgba(255, 208, 168, 0.2));
+        border: 1px solid rgba(255, 106, 136, 0.4);
+        box-shadow: 0 2px 10px rgba(255, 106, 136, 0.1);
       }
       
       .retro-theme .track-item {
-        background-color: #FFD0A8 !important;
+        background: linear-gradient(to right, #FFD0A8, #FFE0B2) !important;
         border-bottom: 1px solid rgba(255, 106, 136, 0.3) !important;
         transition: all 0.3s ease;
         color: #472D2D !important;
       }
       
       .retro-theme .track-item:hover {
-        background-color: #FFAB76 !important;
+        background: linear-gradient(to right, #FFAB76, #FFD0A8) !important;
         color: #472D2D !important;
+        box-shadow: 0 2px 4px rgba(255, 106, 136, 0.2) !important;
+        transform: translateY(-1px);
       }
       
       .retro-theme .track-item.selected {
-        background-color: #FF5F6D !important;
+        background: linear-gradient(45deg, #FF5F6D, #FF7B84) !important;
         color: white !important;
+        box-shadow: 0 2px 6px rgba(255, 95, 109, 0.4) !important;
+        transform: translateZ(0);
       }
       
       .retro-theme .play-button {
-        background-color: #FF6B6B;
+        background: linear-gradient(135deg, #FFAB76, #FF9A8B);
+        box-shadow: 0 2px 6px rgba(255, 95, 109, 0.3);
+      }
+      
+      .retro-theme .play-button:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #FF6B6B, #FF416C);
+        box-shadow: 0 3px 8px rgba(255, 95, 109, 0.5);
       }
       
       .retro-theme .progress-container {
@@ -643,12 +664,13 @@
       }
       
       .retro-theme .progress-bar {
-        background-color: #FC466B;
+        background: linear-gradient(to right, #FFAB76, #FF9A8B);
       }
       
       .retro-theme .now-playing-container {
-        background-color: #FF9A8B;
+        background: linear-gradient(45deg, #FF5F6D, #FF7B84);
         border: none;
+        box-shadow: 0 2px 8px rgba(255, 106, 136, 0.2);
       }
       
       .retro-theme .status-dot {
@@ -657,8 +679,17 @@
       
       .retro-theme .status-dot.playing {
         animation: pulse 1.5s infinite;
+        box-shadow: 0 0 5px #FC466B;
       }
-  </style>
+      
+      .retro-theme .now-playing {
+        color: rgba(71, 45, 45, 0.9);
+      }
+      
+      .retro-theme .time-display {
+        color: white;
+      }
+    </style>
     <script>
       // 초기 테마를 설정하기 위한 즉시 실행 함수
       (function() {
@@ -1356,6 +1387,29 @@
               // 새로운 업데이트 타이머 시작
               this.positionInterval = setInterval(function() {
                 widget.getPosition(function(position) {
+                  // 상태 동기화 확인 및 강제 업데이트
+                  widget.isPaused(function(isPaused) {
+                    if (isPaused && playerState.isPlaying) {
+                      playerState.isPlaying = false;
+                      const pauseStatusDot = document.getElementById('status-dot');
+                      if (pauseStatusDot) pauseStatusDot.classList.remove('playing');
+                      
+                      const pauseButton = document.getElementById('player-play-btn');
+                      if (pauseButton) {
+                        pauseButton.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+                      }
+                    } else if (!isPaused && !playerState.isPlaying) {
+                      playerState.isPlaying = true;
+                      const playStatusDot = document.getElementById('status-dot');
+                      if (playStatusDot) playStatusDot.classList.add('playing');
+                      
+                      const playButton = document.getElementById('player-play-btn');
+                      if (playButton) {
+                        playButton.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+                      }
+                    }
+                  });
+                
                   console.log('현재 위치:', position, '전체 길이:', playerState.duration);
                   const percent = (position / playerState.duration) * 100;
                   
@@ -1491,6 +1545,7 @@
       </div>
       
       <div class="footer">
+        <div class="update-info">This mix drops fresh every Monday. Last update: May 12, 2025.</div>
         &copy; Sobak Figma Music Player
       </div>
     </div>
