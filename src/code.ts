@@ -5,24 +5,91 @@ import { Track, Theme, PluginMessage } from './types';
 // 플러그인 초기화
 figma.showUI(__html__, {
   width: 320,
-  height: 420,
+  height: 460,
   themeColors: true
 });
 
-// 테마 매니저 인스턴스 가져오기
+// 테마 매니저 인스턴스
 const themeManager = ThemeManager.getInstance();
 
+// 사용 가능한 폰트 로드
+async function loadAvailableFonts() {
+  // 기본 폰트 목록 (우선순위 순)
+  const boldFontOptions = [
+    { family: "Inter", style: "Bold" },
+    { family: "Roboto", style: "Bold" },
+    { family: "SF Pro", style: "Bold" },
+    { family: "Arial", style: "Bold" }
+  ];
+  
+  const regularFontOptions = [
+    { family: "Inter", style: "Regular" },
+    { family: "Roboto", style: "Regular" },
+    { family: "SF Pro", style: "Regular" },
+    { family: "Arial", style: "Regular" }
+  ];
+  
+  // 사용할 볼드 폰트와 일반 폰트
+  let usableBoldFont = null;
+  let usableRegularFont = null;
+  
+  // 사용 가능한 첫 번째 볼드 폰트 찾기
+  for (const fontOption of boldFontOptions) {
+    try {
+      await figma.loadFontAsync(fontOption);
+      usableBoldFont = fontOption;
+      console.log(`사용할 볼드 폰트: ${fontOption.family} ${fontOption.style}`);
+      break;
+    } catch (e) {
+      console.log(`폰트 사용 불가: ${fontOption.family} ${fontOption.style}`);
+    }
+  }
+  
+  // 사용 가능한 첫 번째 일반 폰트 찾기
+  for (const fontOption of regularFontOptions) {
+    try {
+      await figma.loadFontAsync(fontOption);
+      usableRegularFont = fontOption;
+      console.log(`사용할 일반 폰트: ${fontOption.family} ${fontOption.style}`);
+      break;
+    } catch (e) {
+      console.log(`폰트 사용 불가: ${fontOption.family} ${fontOption.style}`);
+    }
+  }
+  
+  return {
+    bold: usableBoldFont || { family: "Arial", style: "Bold" },
+    regular: usableRegularFont || { family: "Arial", style: "Regular" }
+  };
+}
+
 // 플러그인 메시지 처리
-figma.ui.onmessage = (msg: PluginMessage) => {
+figma.ui.onmessage = async (msg: PluginMessage) => {
+  console.log('메시지 수신:', msg.type);
+  
   switch (msg.type) {
     case 'insert-player':
-      handleInsertPlayer(msg.track, msg.theme);
+      try {
+        // 트랙 삽입 처리
+        await handleInsertPlayer(msg.track, msg.theme);
+      } catch (error) {
+        console.error('플레이어 삽입 오류:', error);
+        figma.notify(`오류가 발생했습니다: ${error.message}`, { error: true });
+      }
       break;
+      
     case 'change-theme':
-      // 테마 변경 처리
-      themeManager.setCurrentTheme(msg.theme);
-      updateExistingPlayers(msg.theme);
+      try {
+        // 테마 변경 처리
+        themeManager.setCurrentTheme(msg.theme);
+        updateExistingPlayers(msg.theme);
+        figma.notify(`테마가 변경되었습니다: ${msg.theme.name}`);
+      } catch (error) {
+        console.error('테마 변경 오류:', error);
+        figma.notify(`테마 변경 중 오류가 발생했습니다`, { error: true });
+      }
       break;
+      
     case 'close':
       figma.closePlugin();
       break;
@@ -30,7 +97,10 @@ figma.ui.onmessage = (msg: PluginMessage) => {
 };
 
 // 플레이어 프레임 생성
-function handleInsertPlayer(track: Track, theme: Theme): void {
+async function handleInsertPlayer(track: Track, theme: Theme): Promise<void> {
+  // 사용 가능한 폰트 로드
+  const fonts = await loadAvailableFonts();
+  
   // 메인 프레임 생성
   const frame = figma.createFrame();
   frame.name = `SC MICRO - ${track.title}`;
@@ -75,7 +145,7 @@ function handleInsertPlayer(track: Track, theme: Theme): void {
   
   // ==== 트랙 제목 ====
   const titleText = figma.createText();
-  titleText.fontName = { family: "Inter", style: "Medium" };
+  titleText.fontName = fonts.bold;
   titleText.characters = track.title;
   titleText.fontSize = 9;
   titleText.fills = [{
@@ -88,7 +158,7 @@ function handleInsertPlayer(track: Track, theme: Theme): void {
   
   // ==== 아티스트 이름 ====
   const artistText = figma.createText();
-  artistText.fontName = { family: "Inter", style: "Regular" };
+  artistText.fontName = fonts.regular;
   artistText.characters = track.artist;
   artistText.fontSize = 7;
   artistText.fills = [{
@@ -138,16 +208,16 @@ function updateExistingPlayers(theme: Theme): void {
     if (frame.type === 'FRAME') {
       themeManager.applyThemeToFigmaNode(frame, theme);
       
-      // 내부 요소도 업데이트 (디스플레이, 버튼 등)
-      const display = frame.findOne(node => node.name === 'Display' && node.type === 'FRAME');
-      if (display && display.type === 'FRAME') {
-        display.fills = [{
+      // 내부 콘텐츠 프레임 찾기
+      const content = frame.findOne(node => node.name === 'Content' && node.type === 'FRAME');
+      if (content && content.type === 'FRAME') {
+        content.fills = [{
           type: 'SOLID',
           color: themeManager.hexToRGB(theme.styles.displayColor)
         }];
         
         // 텍스트 요소 업데이트
-        const texts = display.findAll(node => node.type === 'TEXT');
+        const texts = content.findAll(node => node.type === 'TEXT');
         texts.forEach(text => {
           if (text.type === 'TEXT') {
             text.fills = [{
@@ -156,15 +226,15 @@ function updateExistingPlayers(theme: Theme): void {
             }];
           }
         });
-      }
-      
-      // 재생 버튼 업데이트
-      const playButton = frame.findOne(node => node.name === 'Play Button' && node.type === 'FRAME');
-      if (playButton && playButton.type === 'FRAME') {
-        playButton.fills = [{
-          type: 'SOLID',
-          color: themeManager.hexToRGB(theme.styles.buttonColor)
-        }];
+        
+        // 앨범 아트 업데이트
+        const albumArt = content.findOne(node => node.name === 'Album Art' && node.type === 'FRAME');
+        if (albumArt && albumArt.type === 'FRAME') {
+          albumArt.fills = [{
+            type: 'SOLID',
+            color: themeManager.hexToRGB(theme.styles.accentColor)
+          }];
+        }
       }
     }
   });

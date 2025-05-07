@@ -46,4 +46,21 @@ export interface CloseMessage {
   type: 'close';
 }
 
-export type PluginMessage = InsertPlayerMessage | ChangeThemeMessage | CloseMessage; 
+// 트랙 업데이트 메시지 타입
+export interface TrackUpdateMessage {
+  type: 'track-updated';
+  track: Track;
+  index: number;
+}
+
+// 트랙 목록이 업데이트되었음을 UI에 알리는 메시지
+export interface TracksUpdatedMessage {
+  type: 'tracks-updated';
+  tracks: Track[];
+}
+
+export type PluginMessage = 
+  | InsertPlayerMessage 
+  | ChangeThemeMessage 
+  | CloseMessage 
+  | TrackUpdateMessage; 

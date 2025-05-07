@@ -1,16 +1,19 @@
 {
   "name": "Figma Music Player - Chill Mix for Designers",
-  "id": "soundcloud-theme-player",
+  "id": "1501953932451463072",
   "api": "1.0.0",
   "main": "dist/code.js",
-  "ui": "./ui.html",
+  "ui": "ui.html",
   "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": [
       "https://api.soundcloud.com", 
       "https://connect.soundcloud.com", 
       "https://sdk.soundcloud.com", 
-      "https://w.soundcloud.com"
-    ]
+      "https://w.soundcloud.com",
+      "https://fonts.googleapis.com"
+    ],
+    "reasoning": "The plugin requires SoundCloud API access to play music tracks directly within the Figma UI and Google Fonts for styling."
   }
 }
